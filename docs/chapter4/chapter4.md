@@ -230,3 +230,82 @@ $$
 由于前面引理提到的关于 Lipschitz 函数的性质，同时我们说明了$\rho$-间隔损失函数的 Lipschitz 性，因此在简单改写复杂度之后便能得到要证明的定理。
 
 第二个定理同理可证。
+
+
+
+## 11.【证明补充】定理4.6补充
+
+**P71**的定理4.6给出了假设空间可分情形下的泛化误差下界。
+
+这个定理说明了无论学习算法多么精妙，总是存在某种数据分布和目标概念，使得输出的假设以较高的概率产生错误（$O(\frac{d}{m}$)。
+
+证明中给出的数字非常具体。事实上，我们也可以更加形式化地估计$\delta$和$\epsilon$与m和d之间的关系：
+
+我们也是按照原证明的思路，构造一种数据分布使得：
+$$
+P_{\mathcal D}(x_0)=1-\epsilon_{rest}\ \wedge\ P_{\mathcal D}(x_i)=\frac{\epsilon_{rest}}{d-1},(i\in[d-1])
+$$
+令
+$$
+A=\lbrace D\sim\mathcal D^m||D|=m\ \wedge\ |\bar D|\leqslant n_{\bar D}\rbrace,1\leqslant n_{\bar D}\leqslant d-1
+$$
+此时（4.43）变为：
+$$
+E_{\mathcal U}[E(h_D,c)]\geqslant \frac{1}{2}\sum_{x\in S-D-{x_0}}P_{x\sim\mathcal D}(x)\geqslant\frac{\epsilon_{rest}(d-1-n_{\bar D})}{2(d-1)}
+$$
+此时（4.46）变为：
+$$
+\begin{aligned}
+&E_{D\in A}[E(h_D,c^*)]\leqslant P_{x\sim\mathcal D}(x\in(S-{x_0}))P_{D\in A}(E(h_D,c^*)>\epsilon)+\epsilon(1-P_{D\in A}(E(h_D,c^*)>\epsilon))\\
+=&\epsilon_{rest}P_{D\in A}(E(h_D,c^*)>\epsilon)+\epsilon(1-P_{D\in A}(E(h_D,c^*)>\epsilon))\\
+=&\epsilon+(\epsilon_{rest}-\epsilon)P_{D\in A}(E(h_D,c^*)>\epsilon)
+\end{aligned}
+$$
+同理（4.47）变为：
+$$
+P_{D\in A}(E(h_D,c^*)>\epsilon)\geqslant\frac{\epsilon_{rest}·\frac{d-1-n_{\bar D}}{2(d-1)}-\epsilon}{\epsilon_{rest}-\epsilon}:=\Delta
+$$
+此时（4.48）变为：
+$$
+P_{D\sim\mathcal D^m}(E(h_D,c^*)>\epsilon)\geqslant\Delta P_{D\sim\mathcal D^m}(D\in A)
+$$
+
+
+此时（4.49）变为：
+$$
+P_{D\sim\mathcal D^m}(\frac{l_m}{m}\geqslant\epsilon_{rest}(1+\gamma))\leqslant e^{-\frac{\epsilon_{rest}m\gamma^2}{3}}
+$$
+因为我们希望右边的上界越紧越好，故取$\gamma=1$，上式变为：
+$$
+P_{D\sim\mathcal D^m}(l_m\geqslant2\epsilon_{rest}m)\leqslant e^{-\frac{\epsilon_{rest}m}{3}}
+$$
+令$n_{\bar D}=2\epsilon_{rest}m$，则：
+$$
+1-\frac{P_{D\sim\mathcal D^m}(E(h_D,c^*)>\epsilon)}{\Delta}\leqslant1-P_{D\sim\mathcal D^m}(D\in A)=P_{D\sim\mathcal D^m}(l_m\geqslant n_{\bar D})\leqslant e^{-\frac{n_{\bar D}}{6}}
+$$
+此时若满足：
+$$
+e^{-\frac{n_{\bar D}}{6}}\leqslant1-\frac{\delta}{\Delta}=1-\frac{\delta·(\epsilon_{rest}-\epsilon)}{\epsilon_{rest}·\frac{d-1-n_{\bar D}}{2(d-1)}-\epsilon}
+$$
+则（4.52）成立。此条件可以具化为定理（4.6），只需令$\delta=\frac{1}{100}$，$\epsilon_{rest}=8\epsilon$，$n_{\bar D}=\frac{d-1}{2}$。
+
+
+
+## 12.【概念补充】贝叶斯最优分类器的说明
+
+对于不可分假设空间，我们需要通过贝叶斯最优分类器（Bayes' classifier），来确定泛化误差下界，这里梳理一下贝叶斯最优分类器的相关概念，类似讲解见6.1小节。
+
+贝叶斯最优分类器是各种分类器中分类错误概率最小或者在预先给定代价的情况下平均风险最小的分类器。这里的分类器是我们之前研究的假设，而风险可以看做分类错误率。
+
+分类原理：通过某对象的先验概率$P(A)$，利用贝叶斯公式$P(A|B)=\frac{P(A)P(B|A)}{P(B)}$计算出其后验概率$P(A|B)$，即该对象属于某一类的概率，选择具有最大后验概率的类作为该对象所属的类。
+
+此时贝叶斯最优分类器$h^*$为：
+$$
+h^*\in argmin_h\{R(h)\}
+$$
+贝叶斯分类器的泛化风险被称为贝叶斯风险，记为：
+$$
+R^*=R(h^*)=\underset{h}{min}\{R(h)\}
+$$
+
+
